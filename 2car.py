@@ -1,4 +1,4 @@
-__author__ = 'John Choo'
+__author__ = 'John Choo os annoyed'
 
 # ORDER OF CODE
 # 1) BACKGROUND
