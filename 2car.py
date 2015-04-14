@@ -5,11 +5,14 @@ __author__ = 'John Choo'
 # 2) CAR
 # 3) SQUARE
 # 4) CIRCLE
-# 5) MOVEMENT LOOP
-# 6) MAIN
+# 5) COUNTER
+# 6) CRASH INTO SQUARE
+# 7) MOVEMENT LOOP
+# 8) MAIN
 
 import pygame
 pygame.init()
+pygame.font.init()
 import time
 import random
 import os
@@ -157,13 +160,20 @@ def circle_generator():
     red_circle()
     blue_circle()
 
-# for circles_hit
+# # # # COUNTER # # # #
 count = 0
 
 def circles_hit(count):
-    font = pygame.font.SysFont(None, 25)
+    font = pygame.font.SysFont('freesansbold.ttf', 45)
     text = font.render(str(count), True, white)
-    gameDisplay.blit(text, (450, 50))
+    gameDisplay.blit(text, (465, 45))
+
+# # # # CRASH INTO SQUARE # # # #
+def crash():
+    global square_redy, square_redx
+    if (square_redy + 52 >= yred) and ((square_redx - 26) < (xred - 26) < (square_redx + 26) or (square_redx - 26) < xred < (square_redx + 26) or (square_redx - 26) < (xred + 26) < (square_redx + 26)):
+        time.sleep(2)
+        main()
 
 # # # # MOVEMENT LOOP # # # #
 keypress_redleft = False
@@ -186,11 +196,12 @@ def movement_loop():
         pygame.display.flip()
         pygame.time.delay(20)
         clock.tick(180)
-        if xred == 45:
+        if xred <= 45:
             keypress_redleft = False
+            print('keypress_redleft is False')
 
     # red car turn right (x)
-    while (xred < 150) and (keypress_redright is True):
+    while (xred < 178) and (keypress_redright is True):
         therealbackground()
         RedCar(xred, yred)
         BlueCar(xblue, yblue)
@@ -200,11 +211,11 @@ def movement_loop():
         pygame.display.flip()
         pygame.time.delay(20)
         clock.tick(180)
-        if xred == 150:
+        if xred >= 178:
             keypress_redright = False
 
     # blue car turn left (c)
-    while (xblue > 345) and (keypress_blueleft is True):
+    while (xblue > 318) and (keypress_blueleft is True):
         therealbackground()
         RedCar(xred, yred)
         BlueCar(xblue, yblue)
@@ -214,7 +225,7 @@ def movement_loop():
         pygame.display.flip()
         pygame.time.delay(20)
         clock.tick(180)
-        if xblue == 345:
+        if xblue == 318:
             keypress_blueleft = False
 
     # blue car turn right (v)
@@ -269,8 +280,8 @@ def main():
                     keypress_blueright = False
                     xblue_change = 0
 
-        xred += xred_change
-        xblue += xblue_change
+        # xred += xred_change
+        # xblue += xblue_change
 
         # background
         therealbackground()
@@ -280,8 +291,11 @@ def main():
 
         # score_counter
         circles_hit(count)
-        if (circle_redy + 27 > yred) and ((circle_redx - 26) < (xred - 26) < (circle_redx + 26) or (circle_redx - 26) < (xred + 26) < (circle_redx + 26) or (circle_redx - 26) < (xred) < (circle_redx + 26)):
+        if (circle_redy + 26 >= yred) and ((circle_redx - 26) < (xred - 26) < (circle_redx + 26) or (circle_redx - 26) < (xred + 26) < (circle_redx + 26) or (circle_redx - 26) < (xred) < (circle_redx + 26)):
             count += 1
+
+        # crash
+        # crash()
 
         # squares
         square_generator()
