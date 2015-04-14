@@ -1,11 +1,12 @@
-__author__ = 'John Choo os annoyed'
+__author__ = 'John Choo'
 
 # ORDER OF CODE
-# 1) BACKGROUND
-# 2) SQUARE
-# 3) CIRCLE
-# 4) MOVEMENT LOOP
-# 5) MAIN
+# 1) DISPLAY
+# 2) CAR
+# 3) SQUARE
+# 4) CIRCLE
+# 5) MOVEMENT LOOP
+# 6) MAIN
 
 import pygame
 pygame.init()
@@ -13,7 +14,7 @@ import time
 import random
 import os
 
-# # # # BACKGROUND # # # #
+# # # # DISPLAY # # # #
 # original 1080, 1920
 display_width = 540
 display_height = 960
@@ -31,6 +32,8 @@ blue = (79, 187, 235)
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('2 Car')
 clock = pygame.time.Clock()
+
+# # # # CAR # # # #
 
 # carImageRed = pygame.image.load("~Graphics\ed-car.png")
 # carImageRed = pygame.image.load(os.path.join(os.path.expanduser("~\PycharmProjects\;2Car"), "Graphics\ed-car.png"))
@@ -71,12 +74,15 @@ def therealbackground():
 
 # # # # SQUARE # # # #
 SquareImageRed = pygame.image.load("C:\Users\John Choo\Desktop\eed.png")
-SquareImageBlue = pygame.image.load("C:\Users\John Choo\Desktop\eblue.png")
+SquareImageRed = pygame.transform.scale(SquareImageRed, (54, 54))
 
-square_redx = 206
-square_redy = random.randint(-82, -62)
-square_bluex = 344
-square_bluey = random.randint(-82, -62)
+SquareImageBlue = pygame.image.load("C:\Users\John Choo\Desktop\eblue.png")
+SquareImageBlue = pygame.transform.scale(SquareImageBlue, (54, 54))
+
+square_redx = 183
+square_redy = random.randint(-102, -42)
+square_bluex = 320
+square_bluey = random.randint(-42, 0)
 
 def square_red(square_redx, square_redy):
     gameDisplay.blit(SquareImageRed, (square_redx, square_redy))
@@ -89,15 +95,22 @@ def square_generator():
     square_redy += 3
     square_bluey += 3
     if square_redy > display_height:
-        square_redy = 0
+        square_redy = random.randint(-202, -42)
         random.randint(1, 2)
-        if random.randint(1, 2) == 2:
-            square_redx = 206
-        elif random.randint(1, 2) == 1:
-            square_redx = 72
+        if random.randint(1, 2) == 1:
+            square_redx = 47
+        elif random.randint(1, 2) == 2:
+            square_redx = 183
+    if square_bluey > display_height:
+        square_bluey = random.randint(-42, 0)
+        random.randint(1, 2)
+        if random.randint(1, 2) == 1:
+            square_bluex = 320
+        elif random.randint(1, 2) == 2:
+            square_bluex = 451
 
-    square_red()
-    square_blue()
+    square_red(square_redx, square_redy)
+    square_blue(square_bluex, square_bluey)
 
 
 # # # # CIRCLE # # # #
@@ -105,48 +118,52 @@ def square_generator():
 def circles(colour, origin, radius):
     pygame.draw.circle(gameDisplay, colour, origin, radius)
 
-circle_y = random.randint(-52, -32)
 circle_redx = 72
+circle_redy = random.randint(-112, -52)
 circle_bluex = 477
+circle_bluey = random.randint(-52, 0)
 
 def red_circle():
     global circle_y, circle_redx
-    circles(red, (circle_redx, circle_y), 26)
-    circles(white, (circle_redx, circle_y), 19)
-    circles(red, (circle_redx, circle_y), 13)
+    circles(red, (circle_redx, circle_redy), 26)
+    circles(white, (circle_redx, circle_redy), 19)
+    circles(red, (circle_redx, circle_redy), 13)
 
 def blue_circle():
     global circle_y, circle_bluex
-    circles(blue, (circle_bluex, circle_y), 26)
-    circles(white, (circle_bluex, circle_y), 19)
-    circles(blue, (circle_bluex, circle_y), 13)
+    circles(blue, (circle_bluex, circle_bluey), 26)
+    circles(white, (circle_bluex, circle_bluey), 19)
+    circles(blue, (circle_bluex, circle_bluey), 13)
 
 def circle_generator():
-    global circle_y, circle_redx, circle_bluex
-    circle_y += 3
-    if circle_y > display_height:
-        circle_y = 0
+    global circle_redy, circle_redx, circle_bluey, circle_bluex
+    circle_redy += 3
+    circle_bluey += 3
+    if circle_redy > display_height:
+        circle_redy = random.randint(-212, -52)
         random.randint(1, 2)
-        if random.randint(1, 2) == 2:
-            circle_redx = 206
-        elif random.randint(1, 2) == 1:
+        if random.randint(1, 2) == 1:
             circle_redx = 72
-        random.randint(3, 4)
-        if random.randint(3, 4) == 3:
-            circle_bluex = 344
-        elif random.randint(3, 4) == 4:
+        elif random.randint(1, 2) == 2:
+            circle_redx = 206
+    if circle_bluey > display_height:
+        circle_bluey = random.randint(-52, 0)
+        random.randint(1, 2)
+        if random.randint(1, 2) == 1:
+            circle_bluex = 347
+        elif random.randint(1, 2) == 2:
             circle_bluex = 477
 
     red_circle()
     blue_circle()
 
 # for circles_hit
-# count = 0
+count = 0
 
-# def circles_hit(count):
-#     font = pygame.font.SysFont(None, 25)
-#     text = font.render(str(count), True, white)
-#     gameDisplay.blit(text, (450, 50))
+def circles_hit(count):
+    font = pygame.font.SysFont(None, 25)
+    text = font.render(str(count), True, white)
+    gameDisplay.blit(text, (450, 50))
 
 # # # # MOVEMENT LOOP # # # #
 keypress_redleft = False
@@ -219,6 +236,7 @@ def main():
     gameExit = False
     global xred, xred_change, yred, xblue, xblue_change, yblue
     global keypress_redleft, keypress_redright, keypress_blueleft, keypress_blueright
+    global count
 
     while not gameExit:
 
@@ -258,7 +276,12 @@ def main():
         therealbackground()
 
         # circles
-        # circle_generator()
+        circle_generator()
+
+        # score_counter
+        circles_hit(count)
+        if (circle_redy + 27 > yred) and ((circle_redx - 26) < (xred - 26) < (circle_redx + 26) or (circle_redx - 26) < (xred + 26) < (circle_redx + 26) or (circle_redx - 26) < (xred) < (circle_redx + 26)):
+            count += 1
 
         # squares
         square_generator()
