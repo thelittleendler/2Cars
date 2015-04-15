@@ -295,7 +295,7 @@ def main():
             count += 1
 
         # crash
-        # crash()
+        crash()
 
         # squares
         square_generator()
