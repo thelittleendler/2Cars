@@ -122,9 +122,9 @@ def circles(colour, origin, radius):
     pygame.draw.circle(gameDisplay, colour, origin, radius)
 
 circle_redx = 72
-circle_redy = random.randint(-112, -52)
+circle_redy = ((random.randint(-45, -15))*3)-1
 circle_bluex = 477
-circle_bluey = random.randint(-52, 0)
+circle_bluey = ((random.randint(-45, -15))*3)-1
 
 def red_circle():
     global circle_y, circle_redx
@@ -142,15 +142,15 @@ def circle_generator():
     global circle_redy, circle_redx, circle_bluey, circle_bluex
     circle_redy += 3
     circle_bluey += 3
-    if circle_redy > display_height:
-        circle_redy = random.randint(-212, -52)
+    if circle_redy > display_height + 150:
+        circle_redy = ((random.randint(-35, 0))*3)-1
         random.randint(1, 2)
         if random.randint(1, 2) == 1:
             circle_redx = 72
         elif random.randint(1, 2) == 2:
             circle_redx = 206
-    if circle_bluey > display_height:
-        circle_bluey = random.randint(-52, 0)
+    if circle_bluey > display_height + 150:
+        circle_bluey = ((random.randint(-35, 0))*3)-1
         random.randint(1, 2)
         if random.randint(1, 2) == 1:
             circle_bluex = 347
@@ -163,16 +163,55 @@ def circle_generator():
 # # # # COUNTER # # # #
 count = 0
 
-def circles_hit(count):
+# in charge of display only
+def display_circles_hit(count):
     font = pygame.font.SysFont('freesansbold.ttf', 45)
     text = font.render(str(count), True, white)
     gameDisplay.blit(text, (465, 45))
+
+# logic for counter only
+red_passed = False
+blue_passed = False
+
+def counter():
+    global count, red_passed, blue_passed, circle_redy, circle_bluey, xred, xblue
+
+    if not red_passed:
+        if (circle_redy + 26 == yred) and ((circle_redx - 26) < (xred - 24) < (circle_redx + 26) or (circle_redx - 26) < (xred + 24) < (circle_redx + 26) or (circle_redx - 26) < xred < (circle_redx + 26)):
+            count += 1
+        if (circle_redy - 124 == yred) and ((circle_redx - 26) < (xred - 24) < (circle_redx + 26) or (circle_redx - 26) < (xred + 24) < (circle_redx + 26) or (circle_redx - 26) < xred < (circle_redx + 26)):
+            count += 1
+
+    if not blue_passed:
+        if (circle_bluey + 26 == yblue) and ((circle_bluex - 26) < (xblue - 24) < (circle_bluex + 26) or (circle_bluex - 26) < (xblue + 24) < (circle_bluex + 26) or (circle_bluex - 26) < xblue < (circle_bluex + 26)):
+            count += 1
+        if (circle_bluey - 124 == yblue) and ((circle_bluex - 26) < (xblue - 24) < (circle_bluex + 26) or (circle_bluex - 26) < (xblue + 24) < (circle_bluex + 26) or (circle_bluex - 26) < xblue < (circle_bluex + 26)):
+            count += 1
+
+# flag for counter
+# contact can occur at top ot bottom
+# to avoid "double count" for sensor at top and bottom we add a flag to activate/deactivate script
+
+def red_passed_detector():
+    global red_passed, circle_redy, circle_redx
+    if (circle_redy + 23 == yred) and (circle_redx - 26) < (xred + 24) < (circle_redx + 26):
+        red_passed = True
+    if circle_redy == 101:
+        red_passed = False
+
+def blue_passed_detector():
+    global blue_passed
+    if (circle_bluey + 28 > yblue) and (circle_bluex - 26) < xblue < (circle_bluex + 26):
+        blue_passed = True
+        # print(blue_passed)
+    if circle_bluey < 100:
+        blue_passed = False
+        # print(blue_passed)
 
 # # # # CRASH INTO SQUARE # # # #
 def crash():
     global square_redy, square_redx
     if (square_redy + 52 >= yred) and ((square_redx - 26) < (xred - 26) < (square_redx + 26) or (square_redx - 26) < xred < (square_redx + 26) or (square_redx - 26) < (xred + 26) < (square_redx + 26)):
-        time.sleep(2)
         main()
 
 # # # # MOVEMENT LOOP # # # #
@@ -198,7 +237,6 @@ def movement_loop():
         clock.tick(180)
         if xred <= 45:
             keypress_redleft = False
-            print('keypress_redleft is False')
 
     # red car turn right (x)
     while (xred < 178) and (keypress_redright is True):
@@ -280,9 +318,6 @@ def main():
                     keypress_blueright = False
                     xblue_change = 0
 
-        # xred += xred_change
-        # xblue += xblue_change
-
         # background
         therealbackground()
 
@@ -290,12 +325,13 @@ def main():
         circle_generator()
 
         # score_counter
-        circles_hit(count)
-        if (circle_redy + 26 >= yred) and ((circle_redx - 26) < (xred - 26) < (circle_redx + 26) or (circle_redx - 26) < (xred + 26) < (circle_redx + 26) or (circle_redx - 26) < (xred) < (circle_redx + 26)):
-            count += 1
+        red_passed_detector()
+        blue_passed_detector()
+        counter()
+        display_circles_hit(count)
 
         # crash
-        crash()
+        # crash()
 
         # squares
         square_generator()
