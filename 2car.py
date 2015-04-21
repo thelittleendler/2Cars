@@ -122,9 +122,9 @@ def circles(colour, origin, radius):
     pygame.draw.circle(gameDisplay, colour, origin, radius)
 
 circle_redx = 72
-circle_redy = ((random.randint(-45, -15))*3)-1
+circle_redy = ((random.randint(-55, -15))*3)-1
 circle_bluex = 477
-circle_bluey = ((random.randint(-45, -15))*3)-1
+circle_bluey = ((random.randint(-55, -15))*3)-1
 
 def red_circle():
     global circle_y, circle_redx
@@ -143,14 +143,14 @@ def circle_generator():
     circle_redy += 3
     circle_bluey += 3
     if circle_redy > display_height + 150:
-        circle_redy = ((random.randint(-35, 0))*3)-1
+        circle_redy = ((random.randint(-55, 0))*3)-1
         random.randint(1, 2)
         if random.randint(1, 2) == 1:
             circle_redx = 72
         elif random.randint(1, 2) == 2:
             circle_redx = 206
     if circle_bluey > display_height + 150:
-        circle_bluey = ((random.randint(-35, 0))*3)-1
+        circle_bluey = ((random.randint(-55, 0))*3)-1
         random.randint(1, 2)
         if random.randint(1, 2) == 1:
             circle_bluex = 347
@@ -177,19 +177,19 @@ def counter():
     global count, red_passed, blue_passed, circle_redy, circle_bluey, xred, xblue
 
     if not red_passed:
-        if (circle_redy + 26 == yred) and ((circle_redx - 26) < (xred - 24) < (circle_redx + 26) or (circle_redx - 26) < (xred + 24) < (circle_redx + 26) or (circle_redx - 26) < xred < (circle_redx + 26)):
+        if (circle_redy + 26 == yred) and (circle_redx - 26) < (xred + 24) < (circle_redx + 26):
             count += 1
-        if (circle_redy - 124 == yred) and ((circle_redx - 26) < (xred - 24) < (circle_redx + 26) or (circle_redx - 26) < (xred + 24) < (circle_redx + 26) or (circle_redx - 26) < xred < (circle_redx + 26)):
+        if (circle_redy - 124 == yred) and (circle_redx - 26) < (xred + 24) < (circle_redx + 26):
             count += 1
 
     if not blue_passed:
-        if (circle_bluey + 26 == yblue) and ((circle_bluex - 26) < (xblue - 24) < (circle_bluex + 26) or (circle_bluex - 26) < (xblue + 24) < (circle_bluex + 26) or (circle_bluex - 26) < xblue < (circle_bluex + 26)):
+        if (circle_bluey + 26 == yblue) and (circle_bluex - 26) < (xblue + 24) < (circle_bluex + 26):
             count += 1
-        if (circle_bluey - 124 == yblue) and ((circle_bluex - 26) < (xblue - 24) < (circle_bluex + 26) or (circle_bluex - 26) < (xblue + 24) < (circle_bluex + 26) or (circle_bluex - 26) < xblue < (circle_bluex + 26)):
+        if (circle_bluey - 124 == yblue) and (circle_bluex - 26) < (xblue + 24) < (circle_bluex + 26):
             count += 1
 
 # flag for counter
-# contact can occur at top ot bottom
+# contact can occur at top or BOTTOM
 # to avoid "double count" for sensor at top and bottom we add a flag to activate/deactivate script
 
 def red_passed_detector():
@@ -201,10 +201,10 @@ def red_passed_detector():
 
 def blue_passed_detector():
     global blue_passed
-    if (circle_bluey + 28 > yblue) and (circle_bluex - 26) < xblue < (circle_bluex + 26):
+    if (circle_bluey + 23 > yblue) and (circle_bluex - 26) < (xblue + 24) < (circle_bluex + 26):
         blue_passed = True
         # print(blue_passed)
-    if circle_bluey < 100:
+    if circle_bluey == 101:
         blue_passed = False
         # print(blue_passed)
 
