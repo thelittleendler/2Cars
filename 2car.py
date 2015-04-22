@@ -1,6 +1,6 @@
 __author__ = 'John Choo'
 
-# ORDER OF CODE
+# _____________________________________ORDER OF CODE_____________________________________
 # 1) DISPLAY
 # 2) CAR
 # 3) SQUARE
@@ -17,10 +17,12 @@ import time
 import random
 import os
 
-# # # # DISPLAY # # # #
+# _____________________________________DISPLAY_____________________________________
+
 # original 1080, 1920
 display_width = 540
 display_height = 960
+ft = pygame.font.Font('freesansbold.ttf',60)
 
 # colour selection list
 black = (0, 0, 0)
@@ -36,7 +38,7 @@ gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('2 Car')
 clock = pygame.time.Clock()
 
-# # # # CAR # # # #
+# _____________________________________CAR_____________________________________
 
 # carImageRed = pygame.image.load("~Graphics\ed-car.png")
 # carImageRed = pygame.image.load(os.path.join(os.path.expanduser("~\PycharmProjects\;2Car"), "Graphics\ed-car.png"))
@@ -60,7 +62,8 @@ def RedCar(xred, yred):
 def BlueCar(xblue, yblue):
     gameDisplay.blit(carImageBlue, (xblue, yblue))
 
-# # # # BACKGROUND # # # #
+# _____________________________________BACKGROUND_____________________________________
+
 def background():
     gameDisplay.fill(backgroundBlue)
 
@@ -75,7 +78,8 @@ def therealbackground():
     backgroundline((display_width - 135), 0, 8.571, 2000, dividerBlue)
     backgroundline((display_width/2), 0, 17.142, 2000, dividerBlue)
 
-# # # # SQUARE # # # #
+# _____________________________________SQUARE_____________________________________
+
 SquareImageRed = pygame.image.load("C:\Users\John Choo\Desktop\eed.png")
 SquareImageRed = pygame.transform.scale(SquareImageRed, (54, 54))
 
@@ -116,7 +120,8 @@ def square_generator():
     square_blue(square_bluex, square_bluey)
 
 
-# # # # CIRCLE # # # #
+# _____________________________________CIRCLE_____________________________________
+
 # circle properties
 def circles(colour, origin, radius):
     pygame.draw.circle(gameDisplay, colour, origin, radius)
@@ -160,7 +165,8 @@ def circle_generator():
     red_circle()
     blue_circle()
 
-# # # # COUNTER # # # #
+# _____________________________________COUNTER_____________________________________
+
 count = 0
 
 # in charge of display only
@@ -208,13 +214,19 @@ def blue_passed_detector():
         blue_passed = False
         # print(blue_passed)
 
-# # # # CRASH INTO SQUARE # # # #
-def crash():
-    global square_redy, square_redx
-    if (square_redy + 52 >= yred) and ((square_redx - 26) < (xred - 26) < (square_redx + 26) or (square_redx - 26) < xred < (square_redx + 26) or (square_redx - 26) < (xred + 26) < (square_redx + 26)):
-        main()
+# _____________________________________CRASH INTO SQUARE_____________________________________
+restart = 0
 
-# # # # MOVEMENT LOOP # # # #
+def crash():
+    global square_redy, square_redx, startscreen_mode, game_mode, restart
+    if (square_redy + 52 >= yred) and ((square_redx - 26) < (xred - 26) < (square_redx + 26) or (square_redx - 26) < xred < (square_redx + 26) or (square_redx - 26) < (xred + 26) < (square_redx + 26)):
+        print(restart)
+        restart = 1
+        startscreen_mode = 1
+        game_mode = 0
+
+# _____________________________________MOVEMENT LOOP_____________________________________
+
 keypress_redleft = False
 keypress_redright = False
 keypress_blueleft = False
@@ -280,15 +292,48 @@ def movement_loop():
         if xblue == 450:
             keypress_redright = False
 
-# # # # MAIN # # # #
+# _____________________________________MAIN_____________________________________
+
+startscreen_mode = 1
+game_mode = 0
+
 def main():
-    gameExit = False
+    # # # # start screen mode
+    global startscreen_mode, game_mode, restart
+    while startscreen_mode == 1:
+
+        pygame.event.pump()
+        mx, my = pygame.mouse.get_pos()
+        lc = pygame.mouse.get_pressed()[0]
+
+        gameDisplay.fill(white)
+
+        normal_i = ft.render('Start Game', 1, (0, 0, 0)), ft.size('Normal Mode')
+
+        gameDisplay.blit(normal_i[0], (120, 100))
+        if 70 < mx < 488 and 85 < my < 160:
+            pygame.draw.rect(gameDisplay, (0, 0, 0), (280-normal_i[1][0]/2-10, 125-normal_i[1][1]/2-5,normal_i[1][0]+20,normal_i[1][1]+10),4)
+            if lc:
+                startscreen_mode = 0
+                game_mode = 1
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+
+
+        pygame.display.flip()
+        pygame.time.wait(20)
+
+    # # # # game mode
     global xred, xred_change, yred, xblue, xblue_change, yblue
     global keypress_redleft, keypress_redright, keypress_blueleft, keypress_blueright
-    global count
+    global count, restart
 
-    while not gameExit:
-
+    while game_mode == 1:
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
@@ -331,7 +376,7 @@ def main():
         display_circles_hit(count)
 
         # crash
-        # crash()
+        crash()
 
         # squares
         square_generator()
@@ -343,7 +388,15 @@ def main():
         pygame.display.update()
         clock.tick(90)
 
+    if restart == 1:
+        print('restart received')
+        startscreen_mode = 1
+        game_mode = 0
 
 main()
-pygame.quit()
-quit()
+if restart == 1:
+    print('hihi')
+    # startscreen_mode = 1
+    # game_mode = 0
+    # pygame.display.flip()
+    # pygame.time.wait(20)
