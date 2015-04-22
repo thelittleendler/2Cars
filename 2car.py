@@ -132,13 +132,13 @@ circle_bluex = 477
 circle_bluey = ((random.randint(-55, -15))*3)-1
 
 def red_circle():
-    global circle_y, circle_redx
+    global circle_redy, circle_redx
     circles(red, (circle_redx, circle_redy), 26)
     circles(white, (circle_redx, circle_redy), 19)
     circles(red, (circle_redx, circle_redy), 13)
 
 def blue_circle():
-    global circle_y, circle_bluex
+    global circle_bluey, circle_bluex
     circles(blue, (circle_bluex, circle_bluey), 26)
     circles(white, (circle_bluex, circle_bluey), 19)
     circles(blue, (circle_bluex, circle_bluey), 13)
@@ -241,11 +241,13 @@ def movement_loop():
         therealbackground()
         RedCar(xred, yred)
         BlueCar(xblue, yblue)
+        square_red(square_redx, square_redy)
+        square_blue(square_bluex, square_bluey)
+        # red_circle()
         xred_change += -3
         xred += xred_change
         print(xred)
         pygame.display.flip()
-        pygame.time.delay(20)
         clock.tick(180)
         if xred <= 45:
             keypress_redleft = False
@@ -255,11 +257,12 @@ def movement_loop():
         therealbackground()
         RedCar(xred, yred)
         BlueCar(xblue, yblue)
+        square_red(square_redx, square_redy)
+        square_blue(square_bluex, square_bluey)
         xred_change += 3
         xred += xred_change
         print(xred)
         pygame.display.flip()
-        pygame.time.delay(20)
         clock.tick(180)
         if xred >= 178:
             keypress_redright = False
@@ -269,11 +272,12 @@ def movement_loop():
         therealbackground()
         RedCar(xred, yred)
         BlueCar(xblue, yblue)
+        square_red(square_redx, square_redy)
+        square_blue(square_bluex, square_bluey)
         xblue_change += -3
         xblue += xblue_change
         print(xblue)
         pygame.display.flip()
-        pygame.time.delay(20)
         clock.tick(180)
         if xblue == 318:
             keypress_blueleft = False
@@ -283,11 +287,12 @@ def movement_loop():
         therealbackground()
         RedCar(xred, yred)
         BlueCar(xblue, yblue)
+        square_red(square_redx, square_redy)
+        square_blue(square_bluex, square_bluey)
         xblue_change += 3
         xblue += xblue_change
         print(xblue)
         pygame.display.flip()
-        pygame.time.delay(20)
         clock.tick(180)
         if xblue == 450:
             keypress_redright = False
@@ -323,10 +328,7 @@ def main():
                 pygame.quit()
                 quit()
 
-
-
         pygame.display.flip()
-        pygame.time.wait(20)
 
     # # # # game mode
     global xred, xred_change, yred, xblue, xblue_change, yblue
@@ -363,10 +365,10 @@ def main():
                     keypress_blueright = False
                     xblue_change = 0
 
-        # background
+        # # background
         therealbackground()
 
-        # circles
+        # # circles
         circle_generator()
 
         # score_counter
@@ -376,9 +378,9 @@ def main():
         display_circles_hit(count)
 
         # crash
-        crash()
+        # crash()
 
-        # squares
+        # # squares
         square_generator()
 
         # cars
@@ -390,8 +392,8 @@ def main():
 
     if restart == 1:
         print('restart received')
-        startscreen_mode = 1
-        game_mode = 0
+        # startscreen_mode = 1
+        # game_mode = 0
 
 main()
 if restart == 1:
