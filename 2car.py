@@ -22,6 +22,7 @@ import os
 # original 1080, 1920
 display_width = 540
 display_height = 960
+
 ft = pygame.font.Font('freesansbold.ttf',60)
 
 # colour selection list
@@ -215,13 +216,12 @@ def blue_passed_detector():
         # print(blue_passed)
 
 # _____________________________________CRASH INTO SQUARE_____________________________________
-restart = 0
-
 def crash():
-    global square_redy, square_redx, startscreen_mode, game_mode, restart
+    global startscreen_mode, game_mode
     if (square_redy + 52 >= yred) and ((square_redx - 26) < (xred - 26) < (square_redx + 26) or (square_redx - 26) < xred < (square_redx + 26) or (square_redx - 26) < (xred + 26) < (square_redx + 26)):
-        print(restart)
-        restart = 1
+        startscreen_mode = 1
+        game_mode = 0
+    if (square_bluey + 52 >= yblue) and ((square_bluex - 26) < (xblue - 26) < (square_bluex + 26) or (square_bluex - 26) < xblue < (square_bluex + 26) or (square_bluex - 26) < (xblue + 26) < (square_bluex + 26)):
         startscreen_mode = 1
         game_mode = 0
 
@@ -301,11 +301,11 @@ def movement_loop():
 
 startscreen_mode = 1
 game_mode = 0
-
+loop = 1
 def main():
     # # # # start screen mode
-    global startscreen_mode, game_mode, restart
-    while startscreen_mode == 1:
+    global startscreen_mode, game_mode, circle_redy, circle_bluey, square_redy, square_bluey, count
+    while startscreen_mode:
 
         pygame.event.pump()
         mx, my = pygame.mouse.get_pos()
@@ -321,6 +321,12 @@ def main():
             if lc:
                 startscreen_mode = 0
                 game_mode = 1
+                square_redy = random.randint(-102, -42)
+                square_bluey = random.randint(-102, -42)
+                circle_redy = ((random.randint(-55, -15))*3)-1
+                circle_bluey = ((random.randint(-55, -15))*3)-1
+                count = 0
+
 
         for event in pygame.event.get():
 
@@ -333,9 +339,9 @@ def main():
     # # # # game mode
     global xred, xred_change, yred, xblue, xblue_change, yblue
     global keypress_redleft, keypress_redright, keypress_blueleft, keypress_blueright
-    global count, restart
 
     while game_mode == 1:
+
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
@@ -378,7 +384,7 @@ def main():
         display_circles_hit(count)
 
         # crash
-        # crash()
+        crash()
 
         # # squares
         square_generator()
@@ -390,15 +396,6 @@ def main():
         pygame.display.update()
         clock.tick(90)
 
-    if restart == 1:
-        print('restart received')
-        # startscreen_mode = 1
-        # game_mode = 0
+while loop:
+    main()
 
-main()
-if restart == 1:
-    print('hihi')
-    # startscreen_mode = 1
-    # game_mode = 0
-    # pygame.display.flip()
-    # pygame.time.wait(20)
